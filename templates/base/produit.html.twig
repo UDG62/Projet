@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{parent()}}Produits{% endblock %}
+{% block body %}
+<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold"> PRODUITS</h1>
+<div class="row row-cols-md-4">
+		{% for lampe in lampes %}
+				<div class="col text-primary">
+					<div class="card" style="width: 18rem;">
+						{% set image = 'image/'~ lampe.image %}
+						<img src="{{asset(image)}}" class="card-img-top" alt="image de lampe">
+						<div class="card-body">
+							<h5 class="card-title">{{lampe.nom}}</h5>
+							<p class="card-text">{{lampe.description}}</p>
+							<a href="#" class="btn btn-primary">{{lampe.prix}}</a>
+							{% if is_granted ('IS_AUTHENTICATED_FULLY') %}
+{% set verif = false %}
+											{% if app.user.panier | length > 0 %}
+											{% for panier in app.user.panier.ajouters %}
+												{% if panier.lampe == lampe %}
+													{% set verif = true %}
+												{% endif %}
+											{% endfor %}
+											{% endif %}
+											{% if verif %}
+												{# si panier #}
+												{# <a class="btn btn-info" href="{{path('app_supp_panier_accueil', {'id': p.id})}}" data-placement="bottom" data-toggle="tooltip" title="Retirer du panier">
+													<i class="bi bi-cart-check"></i>
+												</a> #}
+
+											{% else %}
+												{# si pas panier #}
+												<a class="btn btn-info" href="{{path('app_ajout_panier_lampe', {'id': lampe.id})}}" data-placement="bottom" data-toggle="tooltip" title="Ajouter au panier">
+													<i class="bi bi-cart"></i>
+												</a>
+											{% endif %}
+										{% else %}
+											{# Si non connecté #}
+											{# <a class="btn btn-danger" href="{{path('app_adorer', {'id': p.id})}}" data-toggle="tooltip" title="Ajouter aux favoris">
+												<i class="bi bi-heart text-white"></i>
+											</a> #}
+											<a class="btn btn-info" href="{{path('app_ajout_panier_lampe', {'id': lampe.id})}}" data-placement="bottom" data-toggle="tooltip" title="Ajouter au panier" >
+												<i class="bi bi-cart"></i>
+											</a>
+										{% endif %}
+						</div>
+					</div>
+				</div>
+		{% endfor %}
+	</div>
+{% endblock %}

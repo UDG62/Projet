@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{parent()}}Panier
+{% endblock %}
+{% block body %}
+	<h1 class="text-center text-primary mt-4 pt-4 display-1 fw-bold">
+		Panier</h1>
+    {% set prixFull = 0 %}
+	{% for lampe in lampes %}
+		{% set verif = false %}
+		{% set qte = 0 %}
+		{% for p in panier %}
+			{% if p | length > 0 %}
+				{% set peuCommander = true %}
+			{% endif %}
+			{% if p.lampe == lampe %}
+				{% set verif = true %}
+				{% set qte = p.quantite %}
+			{% endif %}
+		{% endfor %}
+
+		{% if verif %}
+			{% set prixTT =  lampe.prix * qte %}
+			{% set prixFull = prixFull + prixTT %}
+			<tr>
+				<td>
+					<a class="" href="{{path('app_produit', {'id':lampe.id})}}">{{lampe.nom}}</a>
+				</td>
+				{# <td>{{qte}}
+					<a href="{{path('app_ajout_quantite', {'id':lampe.id})}}">
+						<i class="bi bi-plus-square"></i>
+					</a>
+					<a href="{{path('app_supp_quantite', {'id':lampe.id})}}">
+						<i class="bi bi-dash-square"></i>
+					</a>
+				</td> #}
+				<td>{{lampe.prix}}
+					€</td>
+				<td>
+					<a href="{{path('app_supp_panier_lampe', {'id': lampe.id})}}" style="color: black;" data-placement="bottom" data-toggle="tooltip" title="Supprimer du panier">
+						<i class="bi bi-x-circle-fill"></i>
+					</a>
+				</td>
+			</tr>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
